@@ -4,21 +4,42 @@ import './App.css'
 function App() {
   const [enabled, setEnabled] = useState(false)
   const [position, setPosition] = useState({ x:0, y:0 })
+  const [, setFocus] = useState(false)
 
   useEffect( () => {
 
-    const handlemove = (event) => {
+    const handleMove = (event) => {
       const { clientX, clientY } = event;
       setPosition({ x: clientX, y:clientY })
     }
     if (enabled) {
-      window.addEventListener('pointermove', handlemove)
+      window.addEventListener('pointermove', handleMove)
     }
-
     return () => {
-      window.removeEventListener('pointermove', handlemove)
+      window.removeEventListener('pointermove', handleMove)
     }
   },[enabled])
+  
+  useEffect(() => {
+    const handleBlur = () => {
+      setFocus(false);
+      document.title = 'Vuelve 😢';
+    };
+  
+    const handleFocus = () => {
+      setFocus(true);
+      document.title = 'Cursor tracker';
+    };
+  
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+  
+    return () => {
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+  
 
   return (
     <>
